@@ -1,6 +1,6 @@
 // Load plugins
 var gulp = require('gulp'),
-	sass = require('gulp-ruby-sass'),
+	sass = require('gulp-sass'),
 	autoprefixer = require('gulp-autoprefixer'),
 	jshint = require('gulp-jshint'),
 	concat = require('gulp-concat'),
@@ -12,10 +12,14 @@ var gulp = require('gulp'),
 
 // Styles
 gulp.task('styles', function(){
-	return gulp.src('assets/sass/styles.scss')
-		.pipe(sass({ style: 'expanded', }))
+	return gulp.src('./assets/sass/*.scss')
+		.pipe(sass({ 
+			includePaths: ['./assets/sass'], 
+			outputStyle: 'expanded',
+			errLogToConsole: true 
+		}))
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
-        .pipe(gulp.dest('assets/css'))
+        .pipe(gulp.dest('./assets/css'))
         .pipe(notify("Styles task completed"));
 });
 

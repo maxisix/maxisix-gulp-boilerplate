@@ -1,10 +1,10 @@
 {
   "devDependencies": {
     "gulp-autoprefixer": "0.0.6",
-    "gulp-ruby-sass": "~0.3.0",
     "gulp-uglify": "~0.2.1",
     "gulp-imagemin": "~0.1.5",
     "gulp-watch": "~0.5.0",
-    "gulp-notify": "~0.6.0"
+    "gulp-notify": "~0.6.0",
+    "gulp-sass": "~0.7.1"
   }
 }
