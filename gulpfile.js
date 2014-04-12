@@ -8,7 +8,6 @@ var gulp = require('gulp'),
 	jshint = require('gulp-jshint'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
-	watch = require('gulp-watch'),
 	notify = require('gulp-notify'),
 	stylish = require('jshint-stylish'),
 	imagemin = require('gulp-imagemin');
@@ -25,8 +24,8 @@ var target = {
     css_dest : './assets/css',                          // where to put minified css
     js_src : './assets/js/*.js',						// all js files
     js_dest : './assets/js/min',                        // where to put minified js
-	img_src : './assets/images/**/*',				   // all img files
-	img_dest : './assets/images'						// where to put minified img
+	img_src : './assets/images/*.{png,jpg,gif}',		// all img files
+	img_dest : './assets/images/min'					// where to put minified img
 };
 
 
@@ -47,7 +46,7 @@ gulp.task('styles', function() {
 		}))
 		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
         .pipe(gulp.dest(target.css_dest))
-        .pipe(notify("Styles task completed"));
+        .pipe(notify('Styles task completed'));
 });
 
 
@@ -66,7 +65,7 @@ gulp.task('scripts', function() {
 		.pipe(concat('scripts.min.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest(target.js_dest))
-		.pipe(notify("Scripts task completed"));
+		.pipe(notify('Scripts task completed'));
 });
 
 
@@ -80,7 +79,7 @@ IMAGES TASK
 gulp.task('images', function() {
   return gulp.src(target.img_src)
     .pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
-    .pipe(notify("Images task completed"))
+    .pipe(notify('Images task completed'))
     .pipe(gulp.dest(target.img_dest));
 });
 
@@ -93,8 +92,8 @@ gulp.task('images', function() {
 DEFAULT TASK
 *******************************************************************************/
 
-gulp.task('default', function() {
-	gulp.start('styles', 'scripts', 'images');
+gulp.task('default', ['styles','scripts','images'], function() {
+
 });
 
 
@@ -107,13 +106,7 @@ WATCH TASK
 
 gulp.task('watch', function() {
 
-	// Watch .scss files
-    gulp.watch(target.sass_src, ['styles']);
-
-    // Watch .js files
-    gulp.watch(target.js_src, ['scripts']);
-
-    // Watch image files
-    // gulp.watch('assets/images/**/*', ['images']);
+	gulp.watch(target.sass_src, ['styles']);		// Watch .scss files
+	gulp.watch(target.js_src, ['scripts']);			// Watch .js files
 
 });
