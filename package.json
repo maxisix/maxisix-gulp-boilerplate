@@ -8,6 +8,8 @@
     "gulp-sass": "~0.7.1",
     "jshint-stylish": "~0.1.5",
     "gulp-jshint": "~1.5.3",
-    "gulp-concat": "~2.2.0"
+    "gulp-concat": "~2.2.0",
+    "gulp-plumber": "~0.6.3",
+    "gulp-group-css-media-queries": "~1.0.0"
   }
 }
