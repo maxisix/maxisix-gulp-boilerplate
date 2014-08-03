@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "gulp": "latest",
+    "gulp-ruby-sass": "0.7.1",
     "gulp-autoprefixer": "0.0.6",
     "gulp-uglify": "~0.2.1",
     "gulp-imagemin": "~0.1.5",
@@ -10,6 +11,8 @@
     "gulp-jshint": "~1.5.3",
     "gulp-concat": "~2.2.0",
     "gulp-plumber": "~0.6.3",
-    "gulp-group-css-media-queries": "~1.0.0"
+    "gulp-group-css-media-queries": "~1.0.0",
+    "gulp-svgstore": "~0.0.7",
+    "gulp-svgmin": "~0.4.6"
   }
 }

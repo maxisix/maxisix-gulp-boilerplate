@@ -12,7 +12,9 @@ var gulp = require('gulp'),
 	stylish = require('jshint-stylish'),
 	imagemin = require('gulp-imagemin'),
 	plumber = require('gulp-plumber'),
-	gcmq = require('gulp-group-css-media-queries');
+	gcmq = require('gulp-group-css-media-queries'),
+	svgstore = require('gulp-svgstore'),
+	svgmin = require('gulp-svgmin');
 
 
 
@@ -28,7 +30,9 @@ var target = {
     js_src : './assets/js/*.js',						// all js files
     js_dest : './assets/js/min',                        // where to put minified js
 	img_src : './assets/images/*.{png,jpg,gif}',		// all img files
-	img_dest : './assets/images/min'					// where to put minified img
+	img_dest : './assets/images/min',					// where to put minified img
+	svg_src : './assets/images/svg/*.svg',
+	svg_dest : './assets'
 };
 
 
@@ -87,6 +91,21 @@ gulp.task('images', function() {
 		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
 		.pipe(notify('Images task completed'))
 		.pipe(gulp.dest(target.img_dest));
+});
+
+
+
+
+
+/*******************************************************************************
+SVGSTORE TASK
+*******************************************************************************/
+
+gulp.task('svgstore', function() {
+	return gulp.src(target.svg_src)
+        .pipe(svgmin())
+        .pipe(svgstore({ fileName: 'svg-defs.svg', prefix: 'shape-', inlineSvg: false }))
+        .pipe(gulp.dest(target.svg_dest));
 });
 
 
