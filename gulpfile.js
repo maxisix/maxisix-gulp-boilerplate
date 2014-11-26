@@ -1,3 +1,5 @@
+'use strict';
+
 /*******************************************************************************
 DEPENDENCIES
 *******************************************************************************/
@@ -19,22 +21,53 @@ var gulp = require('gulp'),
 
 
 
+
 /*******************************************************************************
 FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 *******************************************************************************/
 
-var target = {
-	main_sass_src : './assets/sass/styles.scss',				
-    sass_src : './assets/sass/**/*.scss',                  // all sass files
-    css_dest : './assets/css',                          // where to put minified css
-    js_src : './assets/js/*.js',						// all js files
-    js_dest : './assets/js/min',                        // where to put minified js
-	img_src : './assets/images/*.{png,jpg,gif}',		// all img files
-	img_dest : './assets/images/min',					// where to put minified img
-	svg_src : './assets/images/svg/*.svg',
-	svg_dest : './assets'
+var root_path = {
+
+	assets : './assets/'
+
 };
 
+var target = {
+
+	main_sass_src : root_paths.assets + 'sass/styles.scss',
+    sass_src : root_paths.assets + 'sass/**/*.scss',               // all sass files
+    css_dest : root_paths.assets + 'css',                         // where to put minified css
+
+    js_src : root_paths.assets + 'js/*.js',						  // all js files
+    js_dest : root_paths.assets + 'js/min',                       // where to put minified js
+
+	img_src : root_paths.assets + 'images/*.{png,jpg,gif}',		  // all img files
+	img_dest : root_paths.assets + 'images/min',				  // where to put minified img
+
+	svg_src : root_paths.assets + 'images/svg/*.svg',
+	svg_dest : root_paths.assets
+
+};
+
+
+
+
+
+/*******************************************************************************
+AUTOPREFIXER CONFIG
+*******************************************************************************/
+
+var AUTOPREFIXER_BROWSERS = [
+  'ie >= 10',
+  'ie_mob >= 10',
+  'ff >= 30',
+  'chrome >= 34',
+  'safari >= 7',
+  'opera >= 23',
+  'ios >= 7',
+  'android >= 4.4',
+  'bb >= 10'
+];
 
 
 
@@ -51,12 +84,11 @@ gulp.task('styles', function() {
 			noCache: true,
 			style: 'compressed'
 		}))
-		.pipe(autoprefixer('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4'))
+		.pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
 		.pipe(gcmq())
 		.pipe(gulp.dest(target.css_dest))
 		.pipe(notify('Styles task completed'));
 });
-
 
 
 
@@ -107,7 +139,6 @@ gulp.task('svgstore', function() {
         .pipe(svgstore({ fileName: 'svg-defs.svg', prefix: 'shape-', inlineSvg: false }))
         .pipe(gulp.dest(target.svg_dest));
 });
-
 
 
 
