@@ -26,7 +26,7 @@ var gulp = require('gulp'),
 FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 *******************************************************************************/
 
-var root_path = {
+var root_paths = {
 
 	assets : './assets/'
 
