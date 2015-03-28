@@ -1,0 +1,79 @@
+/*******************************************************************************
+GRID SETTINGS
+*******************************************************************************/
+// Lost Grid v1.1.1 - https://github.com/corysimmons/lost
+$gutter: 30px !default;
+$breakpoint: 1000px !default;
+$old: false !default;
+$rtl: false !default;
+
+
+
+
+
+/*******************************************************************************
+BREAKPOINT SETTINGS
+*******************************************************************************/
+$Breakpoint-Settings: (
+  'default media': all,
+  'default feature': min-width,
+  'default pair': width,
+
+  'force all media type': false,
+  'to ems': false,
+  'transform resolutions': true,
+
+  'no queries': false,
+  'no query fallbacks': false,
+
+  'base font size': 16px,
+
+  'legacy syntax': false
+);
+
+$breakpoint: () !default;
+
+
+
+
+
+/*******************************************************************************
+COLOR SETTINGS
+*******************************************************************************/
+// Common colours
+$color-heading              : #000;
+$color-text                 : #222;
+$color-background           : #eee;
+$color-border               : #ddd;
+$color-border-heading       : #fee620;
+
+// Links
+$color-link-default         : #39c;
+$color-link-visited         : #05B;
+$color-link-hover           : #39c;
+$color-link-active          : #39c;
+
+// Logo
+$color-logo-text            : $color-text;
+$color-logo-background      : $color-border-heading;
+
+
+
+
+/*******************************************************************************
+FONT SETTINGS
+*******************************************************************************/
+/* Base sizes */
+$base-font-size             : 16; /* browser default */
+$base-line-height           : $base-font-size * 1.5;
+
+/* Font stacks */
+$font-family-sans           : "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif          : Cambria, Georgia, Times, "Times New Roman";
+$font-family-monospace      : "Bitstream Vera Sans", Consolas, Menlo, "Lucida Console", "Liberation Mono", Courier, monospace;
+
+
+
+
+
+

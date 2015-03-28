@@ -1,0 +1,31 @@
+# Build Files #
+######################
+node_modules/
+.sass-cache/
+
+# Compiled Files #
+######################
+scripts.min.js
+
+# Logs #
+######################
+*.log
+
+
+
+# Cache #
+######################
+*.cache
+
+
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
