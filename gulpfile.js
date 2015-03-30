@@ -5,7 +5,9 @@ DEPENDENCIES
 *******************************************************************************/
 
 var gulp = require('gulp'),
-	sass = require('gulp-sass'),
+	stylus = require('gulp-stylus'),
+	sourcemaps = require('gulp-sourcemaps'),
+	rupture = require('rupture'),
 	autoprefixer = require('gulp-autoprefixer'),
 	jshint = require('gulp-jshint'),
 	concat = require('gulp-concat'),
@@ -34,8 +36,8 @@ var root_paths = {
 
 var target = {
 
-	main_sass_src : root_paths.assets + 'sass/styles.scss',
-    sass_src : root_paths.assets + 'sass/**/*.scss',               // all sass files
+	main_stylus_src : root_paths.assets + 'stylus/styles.styl',
+    stylus_src : root_paths.assets + 'stylus/**/*.styl',               // all stylus files
     css_dest : root_paths.assets + 'css',                         // where to put minified css
 
     js_src : root_paths.assets + 'js/*.js',						  // all js files
@@ -74,15 +76,19 @@ var AUTOPREFIXER_BROWSERS = [
 
 
 /*******************************************************************************
-SASS TASK
+STYLUS TASK
 *******************************************************************************/
 
 gulp.task('styles', function() {
-	return gulp.src(target.main_sass_src)
+	return gulp.src(target.main_stylus_src)
 		.pipe(plumber())
-		.pipe(sass({
-			noCache: true,
-			style: 'compressed'
+		.pipe(stylus({
+			sourcemap: {
+				inline: true,
+				sourceRoot: '',
+				basePath: 'css'
+			},
+			use:[rupture()],
 		}))
 		.pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
 		.pipe(gcmq())
@@ -162,7 +168,7 @@ WATCH TASK
 
 gulp.task('watch', function() {
 
-	gulp.watch(target.sass_src, ['styles']);		// Watch .scss files
+	gulp.watch(target.stylus_src, ['styles']);		// Watch .styl files
 	gulp.watch(target.js_src, ['scripts']);			// Watch .js files
 
 });
