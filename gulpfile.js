@@ -18,7 +18,9 @@ var gulp = require('gulp'),
 	plumber = require('gulp-plumber'),
 	gcmq = require('gulp-group-css-media-queries'),
 	svgstore = require('gulp-svgstore'),
-	svgmin = require('gulp-svgmin');
+	svgmin = require('gulp-svgmin'),
+	rename = require('gulp-rename'),
+	cheerio = require('gulp-cheerio');
 
 
 
@@ -141,8 +143,12 @@ SVGSTORE TASK
 
 gulp.task('svgstore', function() {
 	return gulp.src(target.svg_src)
+        .pipe(rename({ prefix: 'icon-' }))
         .pipe(svgmin())
-        .pipe(svgstore({ fileName: 'svg-defs.svg', prefix: 'shape-', inlineSvg: false }))
+        .pipe(svgstore({ inlineSvg: true }))
+        .pipe(cheerio(function ($) {
+            $('svg').attr('style',  'display:none');
+        }))
         .pipe(gulp.dest(target.svg_dest));
 });
 
