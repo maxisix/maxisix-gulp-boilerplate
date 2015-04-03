@@ -5,19 +5,32 @@ DEPENDENCIES
 *******************************************************************************/
 
 var gulp = require('gulp'),
+    notify = require('gulp-notify'),
+    plumber = require('gulp-plumber'),
+
+
+    /* STYLES DEPENDENCIES */
 	stylus = require('gulp-stylus'),
 	sourcemaps = require('gulp-sourcemaps'),
 	rupture = require('rupture'),
 	autoprefixer = require('gulp-autoprefixer'),
-	jshint = require('gulp-jshint'),
+	gcmq = require('gulp-group-css-media-queries'),
+
+
+    /* JS DEPENDENCIES */
+    jshint = require('gulp-jshint'),
 	concat = require('gulp-concat'),
 	uglify = require('gulp-uglify'),
-	notify = require('gulp-notify'),
 	stylish = require('jshint-stylish'),
-	imagemin = require('gulp-imagemin'),
-	plumber = require('gulp-plumber'),
-	gcmq = require('gulp-group-css-media-queries'),
-	svgstore = require('gulp-svgstore'),
+
+
+    /* IMAGES MINIFICATION DEPENDENCIES */
+    imagemin = require('gulp-imagemin'),
+	pngquant = require('imagemin-pngquant'),
+
+
+    /* SVG SPRITES DEPENDENCIES */
+    svgstore = require('gulp-svgstore'),
 	svgmin = require('gulp-svgmin'),
 	rename = require('gulp-rename'),
 	cheerio = require('gulp-cheerio');
@@ -45,7 +58,7 @@ var target = {
     js_src : root_paths.assets + 'js/*.js',						  // all js files
     js_dest : root_paths.assets + 'js/min',                       // where to put minified js
 
-	img_src : root_paths.assets + 'images/*.{png,jpg,gif}',		  // all img files
+	img_src : root_paths.assets + 'images/*.{png,jpg,gif,svg}',		  // all img files
 	img_dest : root_paths.assets + 'images/min',				  // where to put minified img
 
 	svg_src : root_paths.assets + 'images/svg/*.svg',
@@ -62,15 +75,15 @@ AUTOPREFIXER CONFIG
 *******************************************************************************/
 
 var AUTOPREFIXER_BROWSERS = [
-  'ie >= 10',
-  'ie_mob >= 10',
-  'ff >= 30',
-  'chrome >= 34',
-  'safari >= 7',
-  'opera >= 23',
-  'ios >= 7',
-  'android >= 4.4',
-  'bb >= 10'
+    'ie >= 10',
+    'ie_mob >= 10',
+    'ff >= 30',
+    'chrome >= 34',
+    'safari >= 7',
+    'opera >= 23',
+    'ios >= 7',
+    'android >= 4.4',
+    'bb >= 10'
 ];
 
 
@@ -128,8 +141,11 @@ IMAGES TASK
 gulp.task('images', function() {
 	return gulp.src(target.img_src)
 		.pipe(plumber())
-		.pipe(imagemin({ optimizationLevel: 3, progressive: true, interlaced: true }))
-		.pipe(notify('Images task completed'))
+		.pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
 		.pipe(gulp.dest(target.img_dest));
 });
 

@@ -17,6 +17,7 @@
     "gulp-svgmin": "~1.1.1",
     "gulp-rename": "~1.2.2",
     "gulp-cheerio": "~0.6.2",
+    "imagemin-pngquant": "~4.0.0",
     "kouto-swiss": "~0.11.6"
   }
 }
