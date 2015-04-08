@@ -12,7 +12,7 @@
     "gulp-jshint": "~1.9.4",
     "gulp-concat": "~2.5.2",
     "gulp-plumber": "~1.0.0",
-    "gulp-group-css-media-queries": "~1.0.0",
+    "gulp-combine-media-queries": "~0.2.0",
     "gulp-svgstore": "~5.0.0",
     "gulp-svgmin": "~1.1.1",
     "gulp-rename": "~1.2.2",

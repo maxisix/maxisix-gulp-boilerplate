@@ -14,7 +14,7 @@ var gulp = require('gulp'),
 	sourcemaps = require('gulp-sourcemaps'),
 	rupture = require('rupture'),
 	autoprefixer = require('gulp-autoprefixer'),
-	gcmq = require('gulp-group-css-media-queries'),
+	cmq = require('gulp-combine-media-queries'),
 
 
     /* JS DEPENDENCIES */
@@ -106,7 +106,9 @@ gulp.task('styles', function() {
 			use:[rupture()],
 		}))
 		.pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
-		.pipe(gcmq())
+		.pipe(cmq({
+			log: true
+		}))
 		.pipe(gulp.dest(target.css_dest))
 		.pipe(notify('Styles task completed'));
 });
