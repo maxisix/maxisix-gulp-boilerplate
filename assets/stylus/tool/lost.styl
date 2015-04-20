@@ -1,9 +1,8 @@
-// Lost Grid v1.1.1 - https://github.com/corysimmons/lost
+// Lost Grid v5.1.6 - https://github.com/corysimmons/lost
 
 $gutter = 30px
-$breakpoint = 1000px
-$old = false
 $rtl = false
+$flexbox = false
 
 
 /**
@@ -22,16 +21,16 @@ edit($bg = blue)
 
 
 /**
- * Clearfix used to clear floated children columns. http://nicolasgallagher.com/micro-clearfix-hack
+ * Clearfix used to clear floated children elements. http://nicolasgallagher.com/micro-clearfix-hack
  *
  * @example
  *   .parent
- *     cf()
+ *     clearfix()
  *     .child
- *       column(1/2)
+ *       column('1/2')
  */
 
-cf()
+clearfix()
   *zoom: 1
   &:before, &:after
     content: ''
@@ -41,13 +40,71 @@ cf()
 
 
 /**
- * Vertically and/or horizontally align nested elements.
+ * Creates a Flexbox container.
  *
- * @param {string} [$direction=both] - Either vertical, v, horizontal, or h. Defaults to both.
+ * @param {string} [$direction=row] - The flex-direction the container should create. This is typically opposite to the element you're creating so a row() would need flex-container(column).
+ *
+ * @example
+ *   $flexbox = true
+ *
+ *   section
+ *     flex-container()
+ *     figure
+ *       column('1/2')
+ */
+
+flex-container($direction = row)
+  display: flex
+  if $direction is row
+    flex-flow: row wrap
+  if $direction is column
+    flex-flow: column nowrap
+
+
+/**
+ * Horizontally center a container element and apply padding to it.
+ *
+ * @param {unit} [$max-size=1140px] - A max-width to assign. Can be any unit.
+ * @param {unit} [$pad=0] - Padding on the left and right of the element. Can be any unit.
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
+ *
+ * @example
+ *   section
+ *     center(900px)
+ */
+
+center($max-size = 1140px, $pad = 0, $flex = $flexbox)
+  if $flex is false
+    clearfix()
+  else
+    flex-container()
+  if $pad is not 0
+    padding-left: $pad
+    padding-right: $pad
+  max-width: $max-size
+  margin-left: auto
+  margin-right: auto
+
+
+/**
+ * Align nested elements.
+ *
+ * @param {string} [$location=middle-center] - The position the nested element takes relative to the containing element.
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
+ *
+ * - reset
+ * - top-left
+ * - top-center or top
+ * - top-right
+ * - middle-left or left
+ * - middle-right or right
+ * - bottom-left
+ * - bottom-center or bottom
+ * - bottom-right
  *
  * @example
  *   .parent
- *     align(vertical)
+ *     align(right)
  *     width: 600px
  *     height: 400px
  *     .child
@@ -55,285 +112,409 @@ cf()
  *       height: 150px
  */
 
-align($direction = both)
-  if $old
+align($location = middle-center, $flex = $flexbox)
+  if $flex is false
     position: relative
     > *
-      position: absolute
-      transform-style: preserve-3d
-      if ($direction == horizontal) or ($direction == h)
-        left: 50%
-        transform: translateX(-50%)
-      else if ($direction == vertical) or ($direction == v)
-        top: 50%
-        transform: translateY(-50%)
-      else if ($direction == reset)
+      if $location is reset
+        position: static
+      else
+        position: absolute
+      if $location is reset
         top: auto
+        right: auto
+        bottom: auto
         left: auto
-        transform: translate(0, 0)
+        transform: translate3d(0, 0, 0)
+      else if $location is top-left
+        top: 0
+        right: auto
+        bottom: auto
+        left: 0
+        transform: translate3d(0, 0, 0)
+      else if $location is top-center or $location is top
+        top: 0
+        right: auto
+        bottom: auto
+        left: 50%
+        transform: translate3d(-50%, 0, 0)
+      else if $location is top-right
+        top: 0
+        right: 0
+        bottom: auto
+        left: auto
+        transform: translate3d(0, 0, 0)
+      else if $location is middle-left or $location is left
+        top: 50%
+        right: auto
+        bottom: auto
+        left: 0
+        transform: translate3d(0, -50%, 0)
+      else if $location is middle-right or $location is right
+        top: 50%
+        right: 0
+        bottom: auto
+        left: auto
+        transform: translate3d(0, -50%, 0)
+      else if $location is bottom-left
+        top: auto
+        right: auto
+        bottom: 0
+        left: 0
+        transform: translate3d(0, 0, 0)
+      else if $location is bottom-center or $location is bottom
+        top: auto
+        right: auto
+        bottom: 0
+        left: 50%
+        transform: translate3d(-50%, 0, 0)
+      else if $location is bottom-right
+        top: auto
+        right: 0
+        bottom: 0
+        left: auto
+        transform: translate3d(0, 0, 0)
       else
         top: 50%
+        right: auto
+        bottom: auto
         left: 50%
-        transform: translate(-50%, -50%)
+        transform: translate3d(-50%, -50%, 0)
   else
     display: flex
-    if ($direction == horizontal) or ($direction == h)
-      justify-content: center
-    else if ($direction == vertical) or ($direction == v)
-      align-items: center
-    else if ($direction == reset)
+    if $location is reset
       justify-content: inherit
       align-items: inherit
+    else if $location is top-left
+      justify-content: flex-start
+      align-items: flex-start
+    else if $location is top-center or $location is top
+      justify-content: center
+      align-items: flex-start
+    else if $location is top-right
+      justify-content: flex-end
+      align-items: flex-start
+    else if $location is middle-left or $location is left
+      justify-content: flex-start
+      align-items: center
+    else if $location is middle-right or $location is right
+      justify-content: flex-end
+      align-items: center
+    else if $location is bottom-left
+      justify-content: flex-start
+      align-items: flex-end
+    else if $location is bottom-center or $location is bottom
+      justify-content: center
+      align-items: flex-end
+    else if $location is bottom-right
+      justify-content: flex-end
+      align-items: flex-end
     else
       justify-content: center
       align-items: center
 
 
 /**
- * Create a container that is centered in the middle of the page with some padding on the left and right sides of it.
+ * Creates a column that is a fraction of the size of it's containing element with a gutter. You don't need to pass any additional ratios (fractions) as the grid system will make use of calc(). Note that fractions must always be wrapped in quotes.
  *
- * @param {number} [$pad=0] - Padding on the left and right side of the element. 0 by default, but feel free to increase it so containers don't touch the edge of the viewport.
- * @param {number} [$mw=$breakpoint] - The max-width of the element.
+ * @param {string} [$fraction='1/1'] - This is a simple fraction of the containing element's width. This must be a string written as a fraction.
+ * @param {number} [$cycle=convert(unquote(split('/', $fraction)[1]))] - Lost works by assigning a margin-right to all elements except the last in the row. It does this by default by using the denominator of the fraction you pick. To override this default use this param. e.g. column('2/4', $cycle: 2)
+ * @param {number} [$gut=$gutter] - The margin on the right side of the element used to create a gutter. Typically this is left alone and the global $gutter will be used, but you can override it here if you want certain elements to have a particularly large or small gutter (pass 0 for no gutter at all).
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
  *
  * @example
- *   section
- *     container(45px)
+ *   figure
+ *     column('1/3')
  */
 
-container($pad = 0, $mw = $breakpoint)
-  max-width: $mw
-  margin-right: auto
-  margin-left: auto
-  if $old
-    $pad = $pad * .1
-    padding-left: ($pad)%
-    padding-right: ($pad)%
-  else
-    padding-left: $pad
-    padding-right: $pad
-
-
-/**
- * Apply a negative margin on each side of the element. This is required when adding columns and such to negate their outer margins. This mixin automatically applies clearfix as it's assumed floated elements will be nested within it.
- *
- * @param {fraction} [$ratios=1] - If $old is false, a single fraction used to determine the negative left and right margins of the element. If $old is true, a collection of container ratios (fractions).
- * @param {number} [$gut=$gutter] - The gutter width. This is typically left alone, but if you want a specific row/column combination to have a larger or smaller gutter, you need to specify the same $gut on both types of elements.
- *
- * @example
- *   .parent
- *     row()
- *     .children
- *       column(1/2)
- */
-
-row($ratios = 1, $gut = $gutter)
-  cf()
-  if $old
-    $gut = $gut * .1
-    if $gut > 0
-      margin-left: -(_get-column($ratios, $gut)[1])%
-      margin-right: -(_get-column($ratios, $gut)[1])%
-  else
-    margin-left: -($gut / 2)
-    margin-right: -($gut / 2)
-
-
-/**
- * Creates a column that is a fraction of the size of it's containing element with a margin on each side of the element. If $old is set to false, you don't need to pass any additional ratios (fractions), as the grid system will make use of calc(). If $old is set to true, the grid system will support more browsers, but you will need to pass additional ratios for each nested container. It's highly recommended you use the calc() syntax to avoid confusion.
- *
- * @param {fraction} [$ratios=1] - If $old is false, this is a simple fraction of the containing element's width. If $old is true, this is a collection of fractions with the containing element's fraction passed each time it is nested.
- * @param {number} [$gut=$gutter] - The margin on each side of the element used to create a gutter. Typically this is left alone, but if you need to have a specifically large or small gutter, you will need to alter this along with the containing row's gutter so they are the same.
- * @param {boolean} [$output=normal] - Determines what type of code to output. Accepts normal (all styles for a column), init (the initial styles of any column), or bare (just the width of the column). Useful for creating CSS classes with Lost.
- *
- * @example
- *   .parent
- *     row()
- *     .children
- *       column(1/4)
- *
- * @example
- *   .parent
- *     row()
- *     .child
- *       column(1/2)
- *       .nested-parent
- *         row(1/2)
- *         .nested-child
- *           column(1/4 1/2)
- */
-
-column($ratios = 1, $gut = $gutter, $output = normal)
-
-  if $output is init or $output is normal
-    if $rtl
-      float: right
+column($fraction = '1/1', $cycle = convert(unquote(split('/', $fraction)[1])), $gut = $gutter, $flex = $flexbox)
+  _get-size()
+    if $gut is 0
+      return s('calc(99.999999% * %s)', unquote($fraction))
     else
-      float: left
-
-  if $old
-    $gut = $gut * .1
-    if $gut > 0
-      if $output is normal or $output is bare
-        width: (_get-column($ratios, $gut)[0])%
-      if $output is normal or $output is init
-        margin-left: (_get-column($ratios, $gut)[1])%
-        margin-right: (_get-column($ratios, $gut)[1])%
-    if $gut is 0
-      if $output is normal or $output is bare
-        width: (100% * $ratios)
-
+      return s('calc(99.99% * %s - (%s - %s * %s))', unquote($fraction), $gut, $gut, unquote($fraction))
+  width: _get-size()
+  if $flex is false
+    if $rtl
+      &:nth-child(n)
+        margin-left: $gut
+        float: right
+        clear: none
+      &:last-child
+        margin-left: 0
+      &:nth-child({$cycle}n)
+        margin-left: 0
+        float: left
+      &:nth-child({$cycle}n + 1)
+        clear: right
+    else
+      &:nth-child(n)
+        margin-right: $gut
+        float: left
+        clear: none
+      &:last-child
+        margin-right: 0
+      &:nth-child({$cycle}n)
+        margin-right: 0
+        float: right
+      &:nth-child({$cycle}n + 1)
+        clear: left
   else
-    $ratios = $ratios[0]
-    if $gut > 0
-      if $output is normal or $output is bare
-        width: s('calc(100% * %s - %s)', $ratios, $gut)
-      if $output is normal or $output is init
-        margin-left: ($gut / 2)
-        margin-right: ($gut / 2)
-    if $gut is 0
-      if $output is normal or $output is bare
-        width: s('calc(100% * %s)', $ratios)
+    flex: 0 0 auto
+    if $rtl
+      &:nth-child(n)
+        margin-left: $gut
+      &:last-child
+        margin-left: 0
+      &:nth-child({$cycle}n)
+        margin-left: 0
+    else
+      &:nth-child(n)
+        margin-right: $gut
+      &:last-child
+        margin-right: 0
+      &:nth-child({$cycle}n)
+        margin-right: 0
 
 
 /**
- * Margin to the left or right of an elements depending on if the fraction passed is positive or negative.
+ * Creates a row that is a fraction of the size of it's containing element with a gutter. You don't need to pass any additional ratios (fractions) as the grid system will make use of calc(). Note that fractions must always be wrapped in quotes.
  *
- * @param {fraction} [$ratios=false] - Fraction of the container to be offset.
- * @param {number} [$gut=$gutter] - How large the gutter involved is, typically this won't be adjusted, but if you have set the columns for that row to have different gutters than default, you will need to match that gutter here as well.
+ * @param {string} [$fraction='1/1'] - This is a simple fraction of the containing element's height. This must be a string written as a fraction.
+ * @param {number} [$gut=$gutter] - The margin on the bottom of the element used to create a gutter. Typically this is left alone and the global $gutter will be used, but you can override it here if you want certain elements to have a particularly large or small gutter (pass 0 for no gutter at all).
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
+ *
+ * @example
+ *   figure
+ *     row('1/3')
+ */
+
+row($fraction = '1/1', $gut = $gutter, $flex = $flexbox)
+  _get-size()
+    if $gut is 0
+      return s('calc(99.999999% * %s)', unquote($fraction))
+    else
+      return s('calc(99.99% * %s - (%s - %s * %s))', unquote($fraction), $gut, $gut, unquote($fraction))
+  width: 100%
+  height: _get-size()
+  margin-bottom: $gut
+  if $flex is true
+    flex: 0 0 auto
+  &:last-child
+    margin-bottom: 0
+
+
+/**
+ * Creates a block that is a fraction of the size of it's containing element with a gutter on the right and bottom. You don't need to pass any additional ratios (fractions) as the grid system will make use of calc(). Note that fractions must always be wrapped in quotes.
+ *
+ * @param {string} [$fraction='1/1'] - This is a simple fraction of the containing element's width/height. This must be a string written as a fraction.
+ * @param {number} [$cycle=convert(unquote(split('/', $fraction)[1]))] - Lost works by assigning a margin-right/bottom to all elements except the last row (no margin-bottom) and the last column (no margin-right). It does this by default by using the denominator of the fraction you pick. To override this default use this param. e.g. waffle('2/4', $cycle: 2)
+ * @param {number} [$gut=$gutter] - The margin on the right and bottom side of the element used to create a gutter. Typically this is left alone and the global $gutter will be used, but you can override it here if you want certain elements to have a particularly large or small gutter (pass 0 for no gutter at all).
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
+ *
+ * @example
+ *   figure
+ *     waffle('1/3')
+ */
+
+waffle($fraction = '1/1', $cycle = convert(unquote(split('/', $fraction)[1])), $gut = $gutter, $flex = $flexbox)
+  _get-size()
+    if $gut is 0
+      return s('calc(99.999999% * %s)', unquote($fraction))
+    else
+      return s('calc(99.99% * %s - (%s - %s * %s))', unquote($fraction), $gut, $gut, unquote($fraction))
+  width: _get-size()
+  height: _get-size()
+  if $flex is false
+    if $rtl
+      &:nth-child(n)
+        float: right
+        margin-left: $gut
+        clear: none
+      &:nth-child({$cycle}n), &:last-child
+        margin-left: 0
+      &:nth-child({$cycle}n + 1)
+        clear: right
+    else
+      &:nth-child(n)
+        float: left
+        margin-right: $gut
+        clear: none
+      &:nth-child({$cycle}n), &:last-child
+        margin-right: 0
+      &:nth-child({$cycle}n + 1)
+        clear: left
+  else
+    flex: 0 0 auto
+    if $rtl
+      &:nth-child(n)
+        margin-left: $gut
+      &:nth-child({$cycle}n), &:last-child
+        margin-left: 0
+    else
+      &:nth-child(n)
+        margin-right: $gut
+      &:nth-child({$cycle}n), &:last-child
+        margin-right: 0
+  &:nth-child(n)
+    margin-bottom: $gut
+  &:last-child
+    margin-bottom: 0
+  &:nth-last-child(-n + {$cycle})
+    margin-bottom: 0
+
+/**
+ * Margin to the left, right, bottom, or top, of an element depending on if the fraction passed is positive or negative. It works for both horizontal and vertical grids but not both.
+ *
+ * @param {string} [$fraction='1/1'] - Fraction of the container to be offset. Must be a string.
+ * @param {string} [$dir=row] - Direction the grid is going. Should be the opposite of the column() or row() it's being used on.
+ * @param {number} [$gut=$gutter] - How large the gutter involved is, typically this won't be adjusted, but if you have set the elements for that container to have different gutters than default, you will need to match that gutter here as well.
  *
  * @example
  *   .two-elements
- *     column(1/3)
- *     &:nth-child(2)
- *       offset(1/3)
+ *     column('1/3')
+ *     &:first-child
+ *       offset('1/3')
  */
 
-offset($ratios = false, $gut = $gutter, $output = normal)
-  if $old
-    $gut = $gut * .1
-    if $gut > 0
-      if $ratios > 0
-        margin-left: ((_get-column($ratios, $gut)[0]) + ((_get-column($ratios, $gut)[1]) * 3))%
-      if $ratios < 0
-        margin-right: (-1 * ((_get-column($ratios, $gut)[0]) + (_get-column($ratios, $gut)[1])))%
-    if $gut is 0
-      if $ratios > 0
-        margin-left: (100% * $ratios)
-      if $ratios < 0
-        margin-right: (-100% * $ratios)
-  else
-    $ratios = $ratios[0]
-    if $gut > 0
-      if $ratios > 0
-        margin-left: s('calc(100% * %s + (%s / 2))', $ratios, $gut)
-      if $ratios < 0
-        margin-right: s('calc(-100% * %s + (%s / 2))', $ratios, $gut)
-    if $gut is 0
-      if $ratios > 0
-        margin-left: s('calc(100% * %s)', $ratios)
-      if $ratios < 0
-        margin-right: s('calc(-100% * %s)', $ratios)
-
-
-/**
- * Source ordering. Useful for having an element appear above or below another element on mobile devices, and then to the opposite side on larger devices. For instance, a sidebar and article. You might want the sidebar to appear before the article on mobile, but be to the right of the article on desktop. This is how that is achieved.
- *
- * @param {fraction} [$ratios=false] - Fraction of the container to be moved by it's left value.
- * @param {string} [$output=normal] - Determines what styles are compiled. Accepts normal (all styles), init (only initialization styles), or bare (just the left position).
- *
- * @example
- *   .sidebar
- *     @media (min-width: 800px)
- *       column(1/3)
- *       move(2/3)
- *   .article
- *     @media (min-width: 800px)
- *       column(2/3)
- *       move(-1/3)
- */
-
-move($ratios = false, $output = normal)
-  if $output is normal or $output is init
-    position: relative
-  if $output is normal or $output is bare
-    if $old
-      left: (100% * $ratios)
+offset($fraction = '1/1', $dir = row, $gut = $gutter)
+  $numerator = convert(unquote(split('/', $fraction)[0]))
+  _get-size()
+    if $dir is row
+      if $numerator > 0
+        if $gut is 0
+          return s('calc(99.999999% * %s)', unquote($fraction))
+        else
+          return s('calc(99.99% * %s - (%s - %s * %s) + (%s * 2))', unquote($fraction), $gut, $gut, unquote($fraction), $gut)
+      if $numerator < 0
+        if $gut is 0
+          return s('calc(99.999999% * (%s * -1))', unquote($fraction))
+        else
+          return s('calc(99.99% * (%s * -1) - (%s - %s * (%s * -1)) + %s)', unquote($fraction), $gut, $gut, unquote($fraction), $gut)
     else
-      $ratios = $ratios[0]
-      left: s('calc(100% * %s)', $ratios)
+      if $numerator > 0
+        if $gut is 0
+          return s('calc(99.999999% * %s)', unquote($fraction))
+        else
+          return s('calc(99.99% * %s - (%s - %s * %s) + (%s * 2))', unquote($fraction), $gut, $gut, unquote($fraction), $gut)
+      if $numerator < 0
+        if $gut is 0
+          return s('calc(99.999999% * (%s * -1))', unquote($fraction))
+        else
+          return s('calc(99.99% * (%s * -1) - (%s - %s * (%s * -1)) + (%s * 2))', unquote($fraction), $gut, $gut, unquote($fraction), $gut)
+  if $dir is row
+    if $numerator > 0
+      margin-right: _get-size() !important
+    else if $numerator < 0
+      margin-left: _get-size() !important
+    else
+      margin-left: 0 !important
+      margin-right: $gut !important
+  else
+    if $numerator > 0
+      margin-bottom: _get-size() !important
+    else if $numerator < 0
+      margin-top: _get-size() !important
+    else
+      margin-top: 0 !important
+      margin-bottom: $gut !important
 
 
 /**
- * Since columns are floated, when they are of unequal height, they will misalign easily. By setting cycle() you can make sure elements are being cleared on appropriate rows.
+ * Source ordering. Shift elements left, right, up, or down, by their left or top position by passing a positive or negative fraction.
  *
- * @param {number} [$item=-1] - The nth-child + 1 element to clear on. If you want a row to be 3 elements wide, then you'd pass 3.
+ * @param {string} [$fraction='1/1'] - Fraction of the container to be shifted. Must be a string.
+ * @param {string} [$dir=row] - Direction the grid is going. Should be the opposite of the column() or row() it's being used on.
+ * @param {number} [$gut=$gutter] - Adjust the size of the gutter for this movement. Should match the element's $gut.
  *
  * @example
- *   .gallery
- *     img
- *       column(1/3)
- *       cycle(3)
+ *   figure
+ *     column('1/2')
+ *     &:first-child
+ *       move('1/2')
  */
 
-cycle($item = -1)
-  &:nth-child(n)
-    clear: none
-  &:nth-child({$item}n + 1)
-    clear: both
+move($fraction = '1/1', $dir = row, $gut = $gutter)
+  _get-size()
+    if $gut is 0
+      return s('calc(99.999999% * %s)', unquote($fraction))
+    else
+      return s('calc(99.99% * %s - (%s - %s * %s) + %s)', unquote($fraction), $gut, $gut, unquote($fraction), $gut)
+  position: relative
+  if $dir is row
+    left: _get-size()
+  else
+    top: _get-size()
 
 
 /**
- * Reverses a list of numbers (or in our case, fractions)
+ * Creates a wrapping element for working with JS masonry libraries like Isotope. Assigns a negative margin on each side of this wrapping element.
  *
- * @param {fractions} $list - A list of numbers or fractions to be reversed.
+ * @param {number} [$gut=$gutter] - How large the gutter involved is, typically this won't be adjusted and will inherit the global $gutter setting, but it's made available if you want your masonry grid to have a special $gut, it should match your masonry-column's $gut.
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
  *
  * @example
- *   $foo: 1/2 1/3 1/4
- *   _reverse($foo)
- *
- * @return {fractions}
- *
- * @access private
+ *   section
+ *     masonry-wrap()
+ *   figure
+ *     masonry-column('1/3')
  */
 
-_reverse($list)
-  result = ()
-  for item in $list
-    prepend(result, item)
-  return result
+masonry-wrap($gut = $gutter, $flex = $flexbox)
+  if $flex is false
+    clearfix()
+  else
+    flex-container()
+  margin-left: -($gut / 2)
+  margin-right: -($gut / 2)
 
 
 /**
- * Gets a column's width and gutter size as an integer.
+ * Creates a column for working with JS masonry libraries like Isotope. Assigns a margin to each side of the element.
  *
- * @param {fraction} [$ratios=1] - A list of fractions to be used in calculating the appropriate width and gutter size returned.
- * @param {number} [$gut=$gutter] - The gutter size used to generate an appropriate width and gutter size to be returned by the function.
+ * @param {number} [$gut=$gutter] - How large the gutter involved is, typically this won't be adjusted and will inherit the global $gutter setting, but it's made available if you want your masonry grid to have a special $gut, it should match your masonry-row's $gut.
+ * @param {boolean} [$flex=$flexbox] - Determines whether this element should use Flexbox or not.
  *
  * @example
- *   .third
- *     width: (_get-column(1/3, '30px')[0])%
- *
- * @return {fraction | number}
- *
- * @access private
+ *   section
+ *     masonry-wrap()
+ *   figure
+ *     masonry-column('1/3')
  */
 
-_get-column($ratios = 1, $gut = $gutter)
-  $ratios = _reverse($ratios)
-  width = 100
-  for $ratio in $ratios
-    $gut = $gut / width * 100
-    width = 100 * $ratio - $gut
-  return width ($gut / 2)
+masonry-column($fraction = '1/1', $gut = $gutter, $flex = $flexbox)
+  _get-size()
+    if $gut is 0
+      return s('calc(99.999999% * %s)', unquote($fraction))
+    else
+      return s('calc(99.99% * %s - %s)', unquote($fraction), $gut)
+  if $flex is true
+    flex: 0 0 auto
+  width: _get-size()
+  margin-left: ($gut / 2)
+  margin-right: ($gut / 2)
 
 
-// A helper class used for centering by default values.
+/**
+ * A function to return the size of a column minus it's gutter if a gutter is assigned. Handy for generating CSS classes.
+ *
+ * @param {string} [$fraction='1/1'] - This is a simple fraction of the containing element's width. This must be a string written as a fraction.
+ * @param {number} [$gut=$gutter] - The gutter assigned to this size.
+ *
+ * @example
+ *   [class*="col-"]
+ *     float: left
+ *     margin-right: $gutter
+ *     &:last-child
+ *       margin-right: 0
+ *
+ *   for $i in 1..12
+ *     .col-{$i}
+ *       width: get-size(s('%s/12', $i))
+ */
 
-.container
-  container()
-
-
-// A helper class used to create rows with default values.
-
-.row
-  row()
+get-size($fraction = '1/1', $gut = $gutter)
+  if $gut is 0
+    return s('calc(99.999999% * %s)', unquote($fraction))
+  else
+    return s('calc(99.99% * %s - (%s - %s * %s))', unquote($fraction), $gut, $gut, unquote($fraction))
