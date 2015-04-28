@@ -10,30 +10,32 @@ var gulp = require('gulp'),
 
 
     /* STYLES DEPENDENCIES */
-	stylus = require('gulp-stylus'),
-	sourcemaps = require('gulp-sourcemaps'),
-	rupture = require('rupture'),
-	autoprefixer = require('gulp-autoprefixer'),
-	cmq = require('gulp-combine-media-queries'),
+  	stylus = require('gulp-stylus'),
+    postcss = require('gulp-postcss'),
+  	sourcemaps = require('gulp-sourcemaps'),
+  	rupture = require('rupture'),
+  	autoprefixer = require('gulp-autoprefixer'),
+  	cmq = require('gulp-combine-media-queries'),
+    lost = require('lost'),
 
 
     /* JS DEPENDENCIES */
     jshint = require('gulp-jshint'),
-	concat = require('gulp-concat'),
-	uglify = require('gulp-uglify'),
-	stylish = require('jshint-stylish'),
+  	concat = require('gulp-concat'),
+  	uglify = require('gulp-uglify'),
+  	stylish = require('jshint-stylish'),
 
 
     /* IMAGES MINIFICATION DEPENDENCIES */
     imagemin = require('gulp-imagemin'),
-	pngquant = require('imagemin-pngquant'),
+  	pngquant = require('imagemin-pngquant'),
 
 
     /* SVG SPRITES DEPENDENCIES */
     svgstore = require('gulp-svgstore'),
-	svgmin = require('gulp-svgmin'),
-	rename = require('gulp-rename'),
-	cheerio = require('gulp-cheerio');
+  	svgmin = require('gulp-svgmin'),
+  	rename = require('gulp-rename'),
+  	cheerio = require('gulp-cheerio');
 
 
 
@@ -45,24 +47,24 @@ FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 
 var root_paths = {
 
-	assets : './assets/'
+    assets : './assets/'
 
 };
 
 var target = {
 
-	main_stylus_src : root_paths.assets + 'stylus/styles.styl',
+    main_stylus_src : root_paths.assets + 'stylus/styles.styl',
     stylus_src : root_paths.assets + 'stylus/**/*.styl',               // all stylus files
     css_dest : root_paths.assets + 'css',                         // where to put minified css
 
     js_src : root_paths.assets + 'js/*.js',						  // all js files
     js_dest : root_paths.assets + 'js/min',                       // where to put minified js
 
-	img_src : root_paths.assets + 'images/*.{png,jpg,gif,svg}',		  // all img files
-	img_dest : root_paths.assets + 'images/min',				  // where to put minified img
+  	img_src : root_paths.assets + 'images/*.{png,jpg,gif,svg}',		  // all img files
+  	img_dest : root_paths.assets + 'images/min',				  // where to put minified img
 
-	svg_src : root_paths.assets + 'images/svg/*.svg',
-	svg_dest : root_paths.assets
+  	svg_src : root_paths.assets + 'images/svg/*.svg',
+  	svg_dest : root_paths.assets
 
 };
 
@@ -97,14 +99,10 @@ STYLUS TASK
 gulp.task('styles', function() {
 	return gulp.src(target.main_stylus_src)
 		.pipe(plumber())
-		.pipe(stylus({
-			sourcemap: {
-				inline: true,
-				sourceRoot: '',
-				basePath: 'css'
-			},
-			use:[rupture()],
-		}))
+    .pipe(stylus())
+    .pipe(postcss([
+      lost()
+    ]))
 		.pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
 		.pipe(cmq({
 			log: true
