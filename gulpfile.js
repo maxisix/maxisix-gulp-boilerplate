@@ -7,35 +7,72 @@ DEPENDENCIES
 var gulp = require('gulp'),
     notify = require('gulp-notify'),
     plumber = require('gulp-plumber'),
+    browserSync = require('browser-sync'),
+    reload  = browserSync.reload,
+
+
+
+    /* PERFORMANCE */
+    psi = require('psi'),
+    site = 'http://frontend.dev/',
+    siteStage = 'frontend.stage.hff.io',
+    key = '', // pagespeed key if used a lot better
+
+
+
+    /* ANALYSIS */
+    //listSelectorsPlugin = require('list-selectors'),
+    //cssstats = require('postcss-cssstats'),
+
 
 
     /* STYLES DEPENDENCIES */
-  	stylus = require('gulp-stylus'),
     postcss = require('gulp-postcss'),
-  	sourcemaps = require('gulp-sourcemaps'),
-  	rupture = require('rupture'),
-  	autoprefixer = require('gulp-autoprefixer'),
-  	cmq = require('gulp-combine-media-queries'),
+    stylus = require('gulp-stylus'),
+    sourcemaps = require('gulp-sourcemaps'),
+    rupture = require('rupture'),
+    typographic = require('typographic'),
     lost = require('lost'),
+    autoprefixer = require('autoprefixer'),
+    zIndex = require('postcss-zindex'),
+    postcssFocus = require('postcss-focus'),
+    postcssSize = require('postcss-size'),
+    postcssBrandColors = require('postcss-brand-colors'),
+    cmq = require('gulp-combine-media-queries'),
+    postcssEasings = require('postcss-easings'),
+
+    bemLinter = require('postcss-bem-linter'),
+    logWarnings = require('postcss-log-warnings'),
+
+    postcssPalette = require('postcss-color-palette'),
+    // a better palette mrmrs(http://clrs.cc/) is used by default, you can use FlatUI or Material
+
 
 
     /* JS DEPENDENCIES */
     jshint = require('gulp-jshint'),
-  	concat = require('gulp-concat'),
-  	uglify = require('gulp-uglify'),
-  	stylish = require('jshint-stylish'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    stylish = require('jshint-stylish'),
+    stripDebug = require('gulp-strip-debug'),
+
 
 
     /* IMAGES MINIFICATION DEPENDENCIES */
-    imagemin = require('gulp-imagemin'),
-  	pngquant = require('imagemin-pngquant'),
+    imageOptim = require('gulp-imageoptim'),
+
 
 
     /* SVG SPRITES DEPENDENCIES */
     svgstore = require('gulp-svgstore'),
-  	svgmin = require('gulp-svgmin'),
-  	rename = require('gulp-rename'),
-  	cheerio = require('gulp-cheerio');
+    svgmin = require('gulp-svgmin'),
+    rename = require('gulp-rename'),
+    cheerio = require('gulp-cheerio'),
+
+
+
+    /* COOL TOOLS */
+    Pageres = require('pageres');
 
 
 
@@ -47,24 +84,25 @@ FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 
 var root_paths = {
 
-    assets : './assets/'
+    assets : './assets/',
+    src : './src/'
 
 };
 
 var target = {
 
-    main_stylus_src : root_paths.assets + 'stylus/styles.styl',
-    stylus_src : root_paths.assets + 'stylus/**/*.styl',               // all stylus files
-    css_dest : root_paths.assets + 'css',                         // where to put minified css
+    main_stylus_src : root_paths.src + 'stylus/styles.styl',
+    stylus_src : root_paths.src + 'stylus/**/*.styl',               // all stylus files
+    css_dest : root_paths.assets + 'css',                           // where to put minified css
 
-    js_src : root_paths.assets + 'js/*.js',						  // all js files
-    js_dest : root_paths.assets + 'js/min',                       // where to put minified js
+    js_src : root_paths.src + 'js/*.js',                            // all js files
+    js_dest : root_paths.assets + 'js/min',                         // where to put minified js
 
-  	img_src : root_paths.assets + 'images/*.{png,jpg,gif,svg}',		  // all img files
-  	img_dest : root_paths.assets + 'images/min',				  // where to put minified img
+    img_src : root_paths.src + 'images/**/*.{png,jpg,gif}',       // all img files
+    img_dest : root_paths.assets + 'images',                     // where to put minified img
 
-  	svg_src : root_paths.assets + 'images/svg/*.svg',
-  	svg_dest : root_paths.assets
+    svg_src : root_paths.src + 'images/svg/*.svg',
+    svg_dest : root_paths.assets + 'images/svg/svg-sprites/'
 
 };
 
@@ -77,15 +115,12 @@ AUTOPREFIXER CONFIG
 *******************************************************************************/
 
 var AUTOPREFIXER_BROWSERS = [
-    'ie >= 10',
-    'ie_mob >= 10',
-    'ff >= 30',
-    'chrome >= 34',
-    'safari >= 7',
-    'opera >= 23',
-    'ios >= 7',
-    'android >= 4.4',
-    'bb >= 10'
+    'last 2 versions',
+    'ie >= 9'
+];
+
+var PALETTECOLOR = [
+    'material'
 ];
 
 
@@ -97,18 +132,34 @@ STYLUS TASK
 *******************************************************************************/
 
 gulp.task('styles', function() {
-	return gulp.src(target.main_stylus_src)
-		.pipe(plumber())
-    .pipe(stylus())
-    .pipe(postcss([
-      lost()
-    ]))
-		.pipe(autoprefixer(AUTOPREFIXER_BROWSERS))
-		.pipe(cmq({
-			log: true
-		}))
-		.pipe(gulp.dest(target.css_dest))
-		.pipe(notify('Styles task completed'));
+        var processors = [
+              lost(),
+              autoprefixer(AUTOPREFIXER_BROWSERS),
+              zIndex(),
+              postcssFocus(),
+              postcssSize(),
+              postcssEasings(),
+              postcssBrandColors(),
+              postcssPalette(PALETTECOLOR)
+        ];
+
+    return gulp.src(target.main_stylus_src)
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
+        .pipe(stylus({
+            use:[
+            rupture(),
+            typographic()
+            ]
+        }))
+        .pipe(postcss(processors))
+        .pipe(cmq({
+            log: true
+        }))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(target.css_dest))
+        .pipe(reload({stream:true}))
+        .pipe(notify('POSTCSS task completed'));
 });
 
 
@@ -120,14 +171,28 @@ JS TASK
 *******************************************************************************/
 
 gulp.task('scripts', function() {
-	return gulp.src(target.js_src)
-		.pipe(plumber())
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish))
-		.pipe(concat('scripts.min.js'))
-		.pipe(uglify())
-		.pipe(gulp.dest(target.js_dest))
-		.pipe(notify('Scripts task completed'));
+    return gulp.src(target.js_src)
+        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish))
+        .pipe(concat('scripts.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest(target.js_dest))
+        .pipe(notify('Scripts task completed'));
+});
+
+
+// redundancy here maybe change this thing
+gulp.task('scriptsprod', function() {
+    return gulp.src(target.js_src)
+        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish))
+        .pipe(concat('scripts.min.js'))
+        .pipe(uglify())
+        .pipe(stripDebug())
+        .pipe(gulp.dest(target.js_dest))
+        .pipe(notify('Scripts task completed'));
 });
 
 
@@ -139,15 +204,12 @@ IMAGES TASK
 *******************************************************************************/
 
 gulp.task('images', function() {
-	return gulp.src(target.img_src)
-		.pipe(plumber())
-		.pipe(imagemin({
-            progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
-            use: [pngquant()]
-        }))
-		.pipe(gulp.dest(target.img_dest));
+    return gulp.src(target.img_src)
+        .pipe(plumber())
+        .pipe(imageOptim.optimize())
+        .pipe(gulp.dest(target.img_dest));
 });
+
 
 
 
@@ -158,7 +220,7 @@ SVGSTORE TASK
 *******************************************************************************/
 
 gulp.task('svgstore', function() {
-	return gulp.src(target.svg_src)
+    return gulp.src(target.svg_src)
         .pipe(rename({ prefix: 'icon-' }))
         .pipe(svgmin())
         .pipe(svgstore({ inlineSvg: true }))
@@ -166,6 +228,71 @@ gulp.task('svgstore', function() {
             $('svg').attr('style',  'display:none');
         }))
         .pipe(gulp.dest(target.svg_dest));
+});
+
+
+
+
+
+/*******************************************************************************
+ANALYSIS TASK
+*******************************************************************************/
+
+//@todo
+
+
+/*******************************************************************************
+PERFORMANCE TASK
+*******************************************************************************/
+
+// Please feel free to use the `nokey` option to try out PageSpeed
+// Insights as part of your build process. For more frequent use,
+// we recommend registering for your own API key. For more info:
+// https://developers.google.com/speed/docs/insights/v1/getting_started
+
+gulp.task('mobile', function () {
+    return psi(siteStage, {
+        // key: key
+        nokey: 'true',
+        strategy: 'mobile',
+    }, function (err, data) {
+        console.log(data.score);
+        console.log(data.pageStats);
+    });
+});
+
+gulp.task('desktop', function () {
+    return psi(siteStage, {
+        nokey: 'true',
+        // key: key,
+        strategy: 'desktop',
+    }, function (err, data) {
+        console.log(data.score);
+        console.log(data.pageStats);
+    });
+});
+
+
+
+
+
+/*******************************************************************************
+COOL TASKS
+*******************************************************************************/
+
+gulp.task('shoot', function () {
+
+    var pageres = new Pageres({delay: 2})
+        .src(site, ['iphone 5s', 'Nexus 5'], {filename:'<%= date %> - <%= size %>'})
+        .dest('./pageres');
+
+    pageres.run(function (err) {
+        if (err) {
+            throw err;
+        }
+
+        console.log('Shooting terminé!');
+    });
 });
 
 
@@ -181,6 +308,15 @@ gulp.task('default', ['styles','scripts','images'], function() {
 });
 
 
+gulp.task('browser-sync', function() {
+    browserSync({
+        proxy: site ,
+        tunnel: false, // mettre a true si on veut un url accessible de l'extérieur
+        browser: ["google chrome"]
+    });
+});
+
+
 
 
 
@@ -188,9 +324,10 @@ gulp.task('default', ['styles','scripts','images'], function() {
 WATCH TASK
 *******************************************************************************/
 
-gulp.task('watch', function() {
+gulp.task('watch', ['browser-sync'], function() {
 
-	gulp.watch(target.stylus_src, ['styles']);		// Watch .styl files
-	gulp.watch(target.js_src, ['scripts']);			// Watch .js files
+    gulp.watch(target.stylus_src, ['styles']);       // Watch .styl files
+    gulp.watch(target.img_src, ['images']);         // Watch images files
+    gulp.watch(target.js_src, ['scripts']);        // Watch .js files
 
 });

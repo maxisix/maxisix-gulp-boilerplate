@@ -1,25 +1,59 @@
 {
-  "devDependencies": {
-    "gulp": "latest",
-    "gulp-postcss": "~5.1.3",
-    "lost": "~6.0.2",
-    "gulp-stylus": "~2.0.1",
+  "name": "maxisix-gulp-boilerplate",
+  "version": "1.0.0",
+  "description": "maxisix-gulp-template =====================",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fraincs/maxisix-gulp-boilerplate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fraincs/maxisix-gulp-boilerplate/issues"
+  },
+  "homepage": "https://github.com/fraincs/maxisix-gulp-boilerplate",
+  "dependencies": {
+    "autoprefixer": "^5.1.1",
+    "gulp": "^3.8.11",
+    "gulp-cheerio": "^0.6.2",
+    "gulp-combine-media-queries": "^0.2.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-imageoptim": "^0.2.11",
+    "gulp-jshint": "^1.10.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-postcss": "^5.1.6",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-stylus": "^2.0.1",
+    "gulp-svgmin": "^1.1.2",
+    "gulp-svgstore": "^5.0.1",
+    "gulp-uglify": "^1.2.0",
+    "jshint-stylish": "^1.0.2",
+    "list-selectors": "^0.2.0",
+    "lost": "^6.2.0",
+    "pageres": "^1.3.0",
+    "postcss-bem-linter": "^0.2.0",
+    "postcss-brand-colors": "^0.2.0",
+    "postcss-color-palette": "0.0.3",
+    "postcss-cssstats": "^1.0.0",
+    "postcss-easings": "^0.2.0",
+    "postcss-focus": "^0.1.1",
+    "postcss-log-warnings": "^0.2.0",
+    "postcss-messages": "^0.2.1",
+    "postcss-size": "^0.2.0",
+    "postcss-zindex": "^1.1.1",
+    "psi": "^1.0.6",
     "rupture": "^0.6.1",
-    "gulp-sourcemaps ": "~1.5.1",
-    "gulp-autoprefixer": "~2.1.0",
-    "gulp-uglify": "~1.1.0",
-    "gulp-imagemin": "~2.2.1",
-    "gulp-notify": "~2.2.0",
-    "jshint-stylish": "~1.0.1",
-    "gulp-jshint": "~1.9.4",
-    "gulp-concat": "~2.5.2",
-    "gulp-plumber": "~1.0.0",
-    "gulp-combine-media-queries": "~0.2.0",
-    "gulp-svgstore": "~5.0.0",
-    "gulp-svgmin": "~1.1.1",
-    "gulp-rename": "~1.2.2",
-    "gulp-cheerio": "~0.6.2",
-    "imagemin-pngquant": "~4.0.0",
-    "kouto-swiss": "~0.11.6"
+    "typographic": "^2.9.3"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.7.2",
+    "gulp": "^3.8.11",
+    "gulp-strip-debug": "^1.0.2"
   }
 }

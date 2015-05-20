@@ -1,9 +1,10 @@
 /*******************************************************************************
 GRID SETTINGS
 *******************************************************************************/
-// Lost Grid v5.1.6 - https://github.com/corysimmons/lost
-$gutter = 30px;
-$rtl = false;
+// Lost Grid v6.2.0 - https://github.com/corysimmons/lost
+@lost gutter 60px; // gutter accepts any unit value. 30px by default.
+@lost flexbox no-flex; // flexbox accepts flex or no-flex (default).
+@lost cycle auto; // cycle accepts none or any digit (although this is really weird). auto by default.
 
 
 
@@ -13,7 +14,7 @@ $rtl = false;
 COLOR SETTINGS
 *******************************************************************************/
 // Arrays of color call your color like this $scotch-colors["primary"].dark;
-$scotch-colors = {
+$site-colors = {
   primary: {
     base: #8e3329,
     light: #d9534f,
