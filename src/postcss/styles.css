@@ -1,0 +1,43 @@
+/*
+ * POSTCSS PRECSS SMACSS-BEM boilerplate v1.0
+ * Structure Inspired by Jonathan Snook : http://smacss.com
+ * Author: @maxime beaudoin
+ * Date: Sept 07 2015
+ *
+ * Documentation :
+ *      https://github.com/jonathantneal/precss
+ *      http://smacss.com
+ *      http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
+ */
+
+
+/* SETTINGS */
+
+
+
+
+/* BASE */
+@import 'base/normalize';
+@import 'base/base';
+
+
+
+/* MODULE */
+@import 'module/placeholder';
+
+
+
+/* LAYOUT */
+@import 'layout/main';
+
+
+
+/* STATE */
+
+
+
+/* THEME */
+
+
+
+/* SHAME FILE */
