@@ -4,44 +4,44 @@
 DEPENDENCIES
 *******************************************************************************/
 
-var gulp = require('gulp'),
-    notify = require('gulp-notify'),
-    gutil = require('gulp-util'),
-    plumber = require('gulp-plumber'),
-    browserSync = require('browser-sync'),
-    reload  = browserSync.reload,
+import gulp from 'gulp';
+import notify from 'gulp-notify';
+import gutil from 'gulp-util';
+import plumber from 'gulp-plumber';
+import browserSync from 'browser-sync';
+const reload = browserSync.reload;
 
 
 
-    /* STYLES DEPENDENCIES */
-    postcss = require('gulp-postcss'),
-    precss = require('precss'),
-    sourcemaps = require('gulp-sourcemaps'),
-    lost = require('lost'),
-    autoprefixer = require('autoprefixer'),
-    cmq = require('gulp-combine-media-queries'),
+/* STYLES DEPENDENCIES */
+import postcss from 'gulp-postcss';
+import precss from 'precss';
+import sourcemaps from 'gulp-sourcemaps';
+import lost from 'lost';
+import autoprefixer from 'autoprefixer';
+import cmq from 'gulp-combine-media-queries';
 
 
 
-    /* JS DEPENDENCIES */
-    jshint = require('gulp-jshint'),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify'),
-    stylish = require('jshint-stylish'),
-    stripDebug = require('gulp-strip-debug'),
+/* JS DEPENDENCIES */
+import jshint from 'gulp-jshint';
+import concat from 'gulp-concat';
+import uglify from 'gulp-uglify';
+import stylish from 'jshint-stylish';
+import stripDebug from 'gulp-strip-debug';
 
 
 
-    /* IMAGES MINIFICATION DEPENDENCIES */
-    imageOptim = require('gulp-imageoptim'),
+/* IMAGES MINIFICATION DEPENDENCIES */
+import imageOptim from 'gulp-imageoptim';
 
 
 
-    /* SVG SPRITES DEPENDENCIES */
-    svgstore = require('gulp-svgstore'),
-    svgmin = require('gulp-svgmin'),
-    rename = require('gulp-rename'),
-    cheerio = require('gulp-cheerio');
+/* SVG SPRITES DEPENDENCIES */
+import svgstore from 'gulp-svgstore';
+import svgmin from 'gulp-svgmin';
+import rename from 'gulp-rename';
+import cheerio from 'gulp-cheerio';
 
 
 
@@ -51,10 +51,10 @@ var gulp = require('gulp'),
 FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 *******************************************************************************/
 
-var site = site = 'http://postcss.dev/';
+const site = 'http://postcss.dev/';
 
 
-var root_paths = {
+const root_paths = {
 
     assets : './assets/',
     src : './src/'
@@ -62,21 +62,21 @@ var root_paths = {
 };
 
 
-var target = {
+const target = {
 
-    main_postcss_src : root_paths.src + 'postcss/styles.css',
-    postcss_src : root_paths.src + 'postcss/**/*.css',               // all postcss files
-    css_dest : root_paths.assets + 'css',                           // where to put minified css
+    main_postcss_src : `${root_paths.src}/postcss/styles.css`,
+    postcss_src : `${root_paths.src}/postcss/**/*.css`,             // all postcss files
+    css_dest : `${root_paths.assets}/css`,                          // where to put minified css
 
-    js_src : root_paths.src + 'js/*.js',                            // all js files
-    js_dest : root_paths.assets + 'js/min',                         // where to put minified js
+    js_src : `${root_paths.src}/js/\*.js`,                         // all js files
+    js_dest : `${root_paths.assets}/js/min`,                       // where to put minified js
 
-    img_src : root_paths.src + 'images/**/*.{png,jpg,gif}',       // all img files
-    img_dest : root_paths.assets + 'images',                     // where to put minified img
+    img_src : `${root_paths.src}/images/**/*.{png,jpg,gif}`,      // all img files
+    img_dest : `${root_paths.assets}/images`,                     // where to put minified img
 
-    svg_src : root_paths.src + 'images/svg/*.svg',
-    svg_dest : root_paths.assets + 'images/svg/svg-sprites/',
-    svgsprite_dest : root_paths.assets + 'images/svg/svg-sprites/'
+    svg_src : `${root_paths.src}/images/svg/\*.svg`,
+    svg_dest : `${root_paths.assets}/images/svg/svg-sprites/`,
+    svgsprite_dest : `${root_paths.assets}/images/svg/svg-sprites/`
 
 };
 
@@ -88,17 +88,17 @@ var target = {
 POSTCSS CONFIG
 *******************************************************************************/
 
-var AUTOPREFIXER_BROWSERS = [
+const AUTOPREFIXER_BROWSERS = [
     'last 2 versions',
     'ie >= 9'
 ];
 
 // variables settings (colors, fonts, etc)
-var vars = require('./src/postcss/configs/sitesettings'),
-    opts = {
-        basePath: './src/postcss/configs/',
-        maps: [ 'colors.yml' ]
-    };
+const vars = require('./src/postcss/configs/sitesettings');
+const opts = {
+    basePath: './src/postcss/configs/',
+    maps: [ 'colors.yml' ]
+};
 
 
 
@@ -106,15 +106,15 @@ var vars = require('./src/postcss/configs/sitesettings'),
 CSS TASKS
 *******************************************************************************/
 
-gulp.task('styles', function() {
-        var processors = [
-            precss({}),
-            lost(),
-            autoprefixer(AUTOPREFIXER_BROWSERS)
-        ];
+gulp.task('styles', () => {
+    const processors = [
+        precss({}),
+        lost(),
+        autoprefixer(AUTOPREFIXER_BROWSERS)
+    ];
 
     return gulp.src(target.main_postcss_src)
-        .pipe(plumber(function(error){
+        .pipe(plumber( (error) => {
            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
             }))
@@ -137,9 +137,9 @@ gulp.task('styles', function() {
 JS TASK
 *******************************************************************************/
 
-gulp.task('scripts', function() {
+gulp.task('scripts', () => {
     return gulp.src(target.js_src)
-        .pipe(plumber(function(error){
+        .pipe(plumber( (error) => {
            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
             }))
@@ -159,9 +159,9 @@ gulp.task('scripts', function() {
 IMAGES TASK
 *******************************************************************************/
 
-gulp.task('images', function() {
+gulp.task('images', () => {
     return gulp.src(target.img_src)
-        .pipe(plumber(function(error){
+        .pipe(plumber( (error) => {
            gutil.log(gutil.colors.red(error.message));
             this.emit('end');
             }))
@@ -178,21 +178,21 @@ gulp.task('images', function() {
 SVG TASKS
 *******************************************************************************/
 
-gulp.task('svgstore', function() {
+gulp.task('svgstore', () => {
     return gulp.src(target.svg_src)
         .pipe(rename({ prefix: 'icon-' }))
         .pipe(svgmin())
         .pipe(svgstore({ inlineSvg: true }))
-        .pipe(cheerio(function ($) {
+        .pipe(cheerio( ($) => {
             $('svg').attr('style',  'display:none');
         }))
         .pipe(gulp.dest(target.svgsprite_dest));
 });
 
-gulp.task('svgmin', function() {
+gulp.task('svgmin', () => {
     return gulp.src(target.svg_src)
-    .pipe(svgmin())
-    .pipe(gulp.dest(target.svg_dest));
+        .pipe(svgmin())
+        .pipe(gulp.dest(target.svg_dest));
 });
 
 
@@ -203,11 +203,11 @@ gulp.task('svgmin', function() {
 DEFAULT TASK
 *******************************************************************************/
 
-gulp.task('default', ['styles','scripts','images','svgstore', 'svgmin'], function() {
+gulp.task('default', ['styles','scripts','images','svgstore', 'svgmin'], () => {
 
 });
 
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', () => {
     browserSync({
         proxy: site,
         tunnel: false // mettre a true si on veut un url accessible de l'extérieur
@@ -220,7 +220,7 @@ gulp.task('browser-sync', function() {
 WATCH TASK
 *******************************************************************************/
 
-gulp.task('watch', ['browser-sync'], function() {
+gulp.task('watch', ['browser-sync'], () => {
 
     gulp.watch(target.postcss_src, ['styles']);               // Watch .css files
     gulp.watch(target.img_src, ['images']);                  // Watch images files

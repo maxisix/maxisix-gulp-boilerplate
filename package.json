@@ -29,6 +29,7 @@
     "lost": "^6.5.0",
     "browser-sync": "^2.7.13",
     "gulp-strip-debug": "^1.0.2",
-    "precss": "^1.0.0"
+    "precss": "^1.0.0",
+    "babel": "^5.8.23"
   }
 }
