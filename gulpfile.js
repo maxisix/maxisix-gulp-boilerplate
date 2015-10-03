@@ -28,7 +28,6 @@ var gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     stylish = require('jshint-stylish'),
-    stripDebug = require('gulp-strip-debug'),
 
 
 
@@ -51,7 +50,7 @@ var gulp = require('gulp'),
 FILE DESTINATIONS (RELATIVE TO ASSSETS FOLDER)
 *******************************************************************************/
 
-var site = site = 'http://postcss.dev/';
+var site = 'http://postcss.dev/';
 
 
 var root_paths = {
