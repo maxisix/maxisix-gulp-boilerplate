@@ -1,43 +1,59 @@
 /*
- * POSTCSS PRECSS SMACSS-BEM boilerplate v1.0
- * Structure Inspired by Jonathan Snook : http://smacss.com
+ * POSTCSS PRECSS ITCSS-BEM boilerplate v1.0
+ * Structure Inspired by Harry Roberts : http://itcss.io/
  * Author: @maxime beaudoin
  * Date: Sept 07 2015
  *
  * Documentation :
  *      https://github.com/jonathantneal/precss
- *      http://smacss.com
+ *      http://itcss.io/
  *      http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
- */
+*/
 
 
-/* SETTINGS */
+/*
+ * SETTINGS
+ * Global variables, config switches
+*/
 
 
 
+/*
+ * TOOLS
+ * Default mixins and functions
+*/
 
-/* BASE */
-@import 'base/normalize';
+
+
+/*
+ * GENERIC
+ * Ground-zero styles (normalize, resets, box-sizing)
+*/
+@import 'generic/normalize';
+
+
+
+/*
+ * BASE
+ * Unclassed Html elements (type selectors)
+*/
 @import 'base/base';
 
 
 
-/* MODULE */
-@import 'module/placeholder';
+/*
+ * OBJECTS
+ * Cosmetic-free design patterns
+*/
 
 
-
-/* LAYOUT */
-@import 'layout/main';
-
-
-
-/* STATE */
+/*
+ * COMPONENTS
+ * Designed components, chunks of UI
+*/
 
 
-
-/* THEME */
-
-
-
-/* SHAME FILE */
+/*
+ * TRUMPS
+ * Helpers, overrides and shame file
+*/
